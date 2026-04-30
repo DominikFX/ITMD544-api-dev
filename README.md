@@ -1,5 +1,5 @@
-# Professional A/V Equipment Vault API
-## ITMD544 - API Development Assignment
+# ITMD544 - API Development Assignment
+## Professional A/V Equipment Vault API
 
 A backend GraphQL API for managing a professional audio/visual equipment vault. This project is the first part that will be used for the final assignment that is deployed to azure. This project focuses on cloud deployment, and direct database integration using Node.js and Azure SQL.
 
