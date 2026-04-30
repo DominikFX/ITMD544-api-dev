@@ -5,7 +5,7 @@ import cors from 'cors';
 import { typeDefs } from './graphql/typeDefs';
 import { resolvers } from './graphql/resolvers';
 import dotenv from 'dotenv';
-import { getConnection } from './db/db';
+import { initializeDatabase } from './db/init';
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ async function startServer() {
   const app = express();
 
   try {
-    await getConnection();
+    await initializeDatabase();
   } catch (err) {
     console.error('Failed to start server due to database connection error:', err);
     process.exit(1);
