@@ -1,7 +1,7 @@
 # ITMD544 - API Development Assignment
 ## Professional A/V Equipment Vault API
 
-A backend GraphQL API for managing a professional audio/visual equipment vault. This project is the first part that will be used for the final assignment that is deployed to azure. This project focuses on cloud deployment, and direct database integration using Node.js and Azure SQL.
+REST and GraphQL backend API for managing audio/visual equipment vault. This project is the first part to the final assignment and is deployed to Azure. It focuses on cloud deployment, database integration using Node.js and Azure SQL, and advanced API features.
 
 **Live GraphQL API:** [https://itmd544-apidev-h9f0h3gderesc3b0.westus3-01.azurewebsites.net/graphql](https://itmd544-apidev-h9f0h3gderesc3b0.westus3-01.azurewebsites.net/graphql)  
 **GitHub Repository:** [https://github.com/DominikFX/ITMD544-api-dev](https://github.com/DominikFX/ITMD544-api-dev)
@@ -9,19 +9,26 @@ A backend GraphQL API for managing a professional audio/visual equipment vault. 
 ## Features & Implementation (Phases 1 & 3)
 
 This project combines Phase 1 (Database Integration) and Phase 3 (GraphQL API Implementation) requirements:
-- **Direct Database Access:** Utilizes the `mssql` (ADO.NET equivalent for Node.js) package to connect directly to an Azure SQL Serverless database without using an ORM.
-- **Relational Schema:** Implements a multi table relational structure with cross table relationships.
-- **GraphQL Engine:** Express and Apollo Server for a strongly-typed API.
-- **Limitations:** Implemented retry logic on database connections to handle since the free tier of Azure SQL Database needs time to "wake up".
+- **Direct Database Access:** Utilizes the `mssql` (ADO.NET equivalent for Node.js) package to connect to an Azure SQL Serverless database without using an ORM.
+- **Relational Schema:** Has a multi-table relational structure with cross-table relationships.
+- **REST & GraphQL:** Offers an API alongside a GraphQL engine (Express and Apollo Server).
+- **Limitations:** Implemented retry logic on database connections to handle since the free tier of Azure SQL Database needs time to "wake up". If the app does not load, try refreshing the page.
 
 ## Tech Stack
 
 - **Runtime:** Node.js / TypeScript
-- **Server:** Express.js + Apollo Server 4
+- **Server:** Express.js + Apollo Server
 - **Database:** Azure SQL Database (Serverless, Free Tier)
 - **Deployment:** Azure App Service (Web App)
 
-## System Architecture & Database Schema
+## System Architecture & Endpoints
+
+- `GET /` - API Status & Version
+- `GET /docs` - Interactive Swagger UI Documentation
+- `POST /graphql` - Apollo Server GraphQL Endpoint
+- **API Endpoints:** `/crew`, `/equipment`, `/reservations`, `/reset`
+
+## Database Schema
 
 The database consists of the following core tables:
 
@@ -81,9 +88,7 @@ erDiagram
    ```bash
    cp .env.example .env
    ```
-   *Replace the placeholders in the `.env` file with your actual Azure SQL credentials.*
-
-   > **Note:** Because the database is hosted on Azure SQL, ensure that your current local IP address is whitelisted in the Azure Portal Firewall settings, or your connection will time out.
+   *Replace the placeholders in the `.env` file with Azure SQL credentials. Also, add your current local IP address to the Azure Portal Firewall settings if running locally.*
 
 4. **Initialize the Database:**
    If the database is empty, run the initialization script to generate the tables:
@@ -95,16 +100,18 @@ erDiagram
    ```bash
    npm run dev
    ```
-   The API and Apollo Sandbox will be available at `http://localhost:4000/graphql`.
+   - **REST API Docs:** `http://localhost:4000/docs`
+   - **GraphQL Sandbox:** `http://localhost:4000/graphql`
+   - **API Status:** `http://localhost:4000/`
 
 ## API Usage Examples
 
-You can execute queries directly in the Apollo Sandbox UI at the link above.
+You can execute queries directly in the GraphQL page at the link above.
 
 ### 1. Create a Crew Member (Mutation)
 ```graphql
 mutation {
-  createCrewMember(email: "dom@example.com", name: "Dom", role: "Manager") {
+  createCrewMember(email: "dom@iit.edu", name: "Dom", role: "Manager") {
     id
     name
     email
@@ -153,5 +160,4 @@ mutation {
 This application is configured for Continuous Deployment via GitHub Actions or Azure Deployment Center.
 1. Create a Node.js Web App in Azure App Service.
 2. Link the repository via the Deployment Center.
-3. Under the Web App's **Configuration -> Application settings**, add the `DB_CONNECTION_STRING` variable containing the Azure SQL Serverless credentials.
-4. Set the Startup Command to `npm start` (which runs `node dist/index.js`). Note that you may need to add a build step (`npm run build`) in your CI/CD pipeline if deploying TypeScript directly.
+3. **Configuration -> Application settings**, add the `DB_CONNECTION_STRING` variable with the Azure SQL credentials.
