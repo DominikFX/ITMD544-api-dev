@@ -24,6 +24,8 @@
     "@types/express": "^5.0.6",
     "@types/mssql": "^12.3.0",
     "@types/node": "^25.6.0",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/yamljs": "^0.2.34",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
@@ -36,6 +38,8 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "graphql": "^16.13.2",
-    "mssql": "^12.5.0"
+    "mssql": "^12.5.0",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   }
 }

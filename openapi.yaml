@@ -1,0 +1,256 @@
+openapi: 3.1.0
+info:
+  title: A/V Equipment Vault REST API
+  description: API for managing A/V equipment inventory, crew members, and reservations. Includes third-party integration for evaluating holiday closures.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Base path for REST API
+paths:
+  /:
+    get:
+      summary: API Index
+      description: Returns a list of available endpoints.
+      responses:
+        '200':
+          description: OK
+  /reset:
+    post:
+      summary: Reset and Seed Database
+      description: Wipes all current data and seeds the database with dummy data for testing.
+      responses:
+        '200':
+          description: Database successfully wiped and seeded.
+  /crew:
+    get:
+      summary: Get all crew members
+      responses:
+        '200':
+          description: A list of crew members.
+    post:
+      summary: Create a crew member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                role:
+                  type: string
+      responses:
+        '201':
+          description: Crew member created.
+  /crew/{id}:
+    get:
+      summary: Get crew member by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Crew member details.
+        '404':
+          description: Not found.
+    put:
+      summary: Update crew member by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                role:
+                  type: string
+      responses:
+        '200':
+          description: Crew member updated.
+    delete:
+      summary: Delete a crew member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Deleted successfully.
+  /equipment:
+    get:
+      summary: Get all equipment
+      responses:
+        '200':
+          description: A list of equipment items.
+    post:
+      summary: Create an equipment item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sku:
+                  type: string
+                name:
+                  type: string
+                category:
+                  type: string
+      responses:
+        '201':
+          description: Equipment created.
+  /equipment/{id}:
+    get:
+      summary: Get equipment by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Equipment details.
+        '404':
+          description: Not found.
+    put:
+      summary: Update equipment by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                is_available:
+                  type: boolean
+      responses:
+        '200':
+          description: Equipment updated.
+    delete:
+      summary: Delete an equipment item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Deleted successfully.
+  /reservations:
+    get:
+      summary: Get all reservations
+      responses:
+        '200':
+          description: A list of reservations with relational data.
+    post:
+      summary: Create a reservation
+      description: Creates a reservation and automatically checks against the Nager.Date API to flag if the checkout/return date falls on a public holiday.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                crew_id:
+                  type: string
+                  format: uuid
+                equipment_ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                checkout_date:
+                  type: string
+                  format: date-time
+                return_date:
+                  type: string
+                  format: date-time
+                event_venue:
+                  type: string
+      responses:
+        '201':
+          description: Reservation created successfully.
+  /reservations/{id}:
+    get:
+      summary: Get reservation by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Reservation details.
+        '404':
+          description: Not found.
+    put:
+      summary: Update reservation status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+      responses:
+        '200':
+          description: Reservation status updated.
+    delete:
+      summary: Delete a reservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Deleted successfully.

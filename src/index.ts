@@ -6,6 +6,11 @@ import { typeDefs } from './graphql/typeDefs';
 import { resolvers } from './graphql/resolvers';
 import dotenv from 'dotenv';
 import { initializeDatabase } from './db/init';
+import restRouter from './routes/rest';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
+import { createLoaders } from './graphql/loaders';
 
 dotenv.config();
 
@@ -29,7 +34,16 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  app.use('/graphql', expressMiddleware(server));
+  app.use('/', restRouter);
+
+  const swaggerDocument = YAML.load(path.join(__dirname, '../openapi.yaml'));
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+  app.use('/graphql', expressMiddleware(server, {
+    context: async ({ req }) => ({
+      loaders: createLoaders()
+    })
+  }));
 
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
